@@ -11,7 +11,7 @@
 
 LOG_MODULE_REGISTER(rid_scan, LOG_LEVEL_INF);
 
-#define BLUETOOTH_MIN_DATA_LEN (RID_TRANSPORT_BT_MESSAGE_OFFSET + RID_MESSAGE_SIZE)
+#define BT_MIN_DATA_LEN (RID_TRANSPORT_BT_MESSAGE_OFFSET + RID_MESSAGE_SIZE)
 
 static bool filter_rid(struct bt_data *data, void *user_data) {
     const uint8_t **buffer = user_data;
@@ -22,7 +22,7 @@ static bool filter_rid(struct bt_data *data, void *user_data) {
     }
 
     /* Must be atleast 29 bytes. */
-    if (data->data_len < BLUETOOTH_MIN_DATA_LEN) {
+    if (data->data_len < BT_MIN_DATA_LEN) {
         return true;
     }
 
@@ -60,12 +60,14 @@ callback(const bt_addr_le_t *addr, int8_t rssi, uint8_t type, struct net_buf_sim
         return;
     }
 
+    /* Get the message and counter from the buffer. */
     message = (const rid_message_t *)(buffer + RID_TRANSPORT_BT_MESSAGE_OFFSET);
     counter = buffer[RID_TRANSPORT_BT_COUNTER_OFFSET];
 
     LOG_DBG("%s rssi=%d type=%u len=%u", bt_addr_le_str(addr), rssi, type, ad->len);
     LOG_HEXDUMP_DBG(ad->data, ad->len, "ad");
 
+    /* Convert the message to JSON. */
     rc = rid_message_to_json(message, json, sizeof(json), NULL);
     if (rc < 0) {
         LOG_ERR("JSON encode failed: %s", rid_error_to_string(rc));
