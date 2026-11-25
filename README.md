@@ -1,4 +1,16 @@
+An [ASTM F3411](https://store.astm.org/f3411-22a.html) and
+[DIN EN 4709-002](https://stan-shop.org/en/catalog/item/74958) Remote
+ID scanner for Nordic Semiconductor development boards. It uses
+[librid](https://github.com/tuupola/librid) for parsing the messages. It
+can dump the results in both JSON and CSV.
+
 ## Build
+
+Download the code.
+
+```
+$ git clone --recursive https://github.com/tuupola/nrf_rid_scanner.git
+```
 
 ### XIAO
 
@@ -66,7 +78,8 @@ ctrl-a ctrl-x
 
 ```
 
-Output when compiled with `CONFIG_RID_OUTPUT_CSV=y`.
+Output when compiled with `CONFIG_RID_OUTPUT_CSV=y`. The message itself is
+hex encoded.
 
 ```
 $ picocom -b 115200 /dev/ttyACM0
@@ -86,4 +99,18 @@ DE:61:0C:28:01:CA,-40,1,02103135393641333044303031464543330000000000000000
 EF:2E:A0:2A:4C:4B,-49,97,F2190302103232303431420000000000000000000000000000000000024001200100380000040593CFD8A8ED5C93C6000000000000120000007E20BD5C25401C190DB2076E08D90700603E030000
 EF:2E:A0:2A:4C:4B,-49,97,F21906225005790000000003E466DC0E5C67DC0EDE0C84FB229ACA03225176299D09F931CF3BAECA7044659C38CA81951707692A332252AE200100380000040593CFD8A8ED5C93C644F5F5D895C82253720249BB4A221C3915EA6B84BAAE2228F6EC388EEACBB522549FB436F2869D2976A13DE8E36B314F875E0DFBFA46B65E22554BDC78D4DF408C77F52A9D0E0000000000000000000000
 DE:61:0C:28:01:CA,-40,1,520046494E38376173747264676531326B3800000000000000
+```
+
+You can parse the hex for example with the
+[rid](https://github.com/tuupola/librid/tree/master/examples/cli) command line
+tool.
+
+```
+$ rid 520046494E38376173747264676531326B3800000000000000 | jq
+{
+  "protocol_version": 2,
+  "message_type": 5,
+  "id_type": 0,
+  "operator_id": "FIN87astrdge12k8"
+}
 ```
