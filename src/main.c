@@ -5,7 +5,6 @@
 #include <zephyr/sys/byteorder.h>
 
 #include <rid/message.h>
-#include <rid/message_pack.h>
 #include <rid/transport.h>
 #include <rid/version.h>
 
@@ -72,11 +71,7 @@ static void print_csv(
     const bt_addr_t *addr, int8_t rssi, uint8_t counter, const rid_message_t *message
 ) {
     const uint8_t *bytes = (const uint8_t *)message;
-    size_t size = RID_MESSAGE_SIZE;
-
-    if (rid_message_get_type(message) == RID_MESSAGE_TYPE_MESSAGE_PACK) {
-        size = rid_message_pack_size((const rid_message_pack_t *)message);
-    }
+    size_t size = rid_message_size(message);
 
     printf("%s,%hhd,%hhu,", bt_addr_str(addr), rssi, counter);
     for (size_t i = 0; i < size; i++) {
