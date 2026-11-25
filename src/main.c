@@ -72,10 +72,11 @@ callback(const bt_addr_le_t *addr, int8_t rssi, uint8_t type, struct net_buf_sim
         return;
     }
 
-    /* Add the mac address and counter to the JSON output and dump. */
+    /* Add the mac address, rssi and counter to the JSON output and dump. */
     printf(
-        "{\"mac\": \"%s\", \"counter\": %hhu, %s\n",
+        "{\"mac\": \"%s\", \"rssi\": %hhd, \"counter\": %hhu, %s\n",
         bt_addr_str(&addr->a),
+        rssi,
         counter,
         json + 1
     );
