@@ -11,19 +11,19 @@ SUBSYSTEM=="hidraw", ATTRS{idVendor}=="2886", ATTRS{idProduct}=="0068", MODE="06
 SUBSYSTEM=="usb", ATTR{idVendor}=="2886", ATTR{idProduct}=="0068", MODE="0666"
 ```
 
-[XIAO nRF54LM20A](https://www.seeedstudio.com/Seeed-Studio-XIAO-nRF54LM20A-p-6841.html) also needs recent NCS for building.
+[XIAO nRF54LM20A](https://www.seeedstudio.com/Seeed-Studio-XIAO-nRF54LM20A-p-6841.html) also needs recent NCS for building. Build and flash with `west`.
 
 ```
 $ nrfutil sdk-manager toolchain launch --ncs-version v3.5.0-preview4 --shell
-
 (v3.5.0-preview4) host% source ~/ncs/v3.5.0-preview4/zephyr/zephyr-env.sh
 (v3.5.0-preview4) host% west build -b xiao_nrf54lm20a/nrf54lm20a/cpuapp --pristine
+(v3.5.0-preview4) host% west flash
 ```
 
 Build and flash with `west`.
 
 ```
-$ west build -b xiao_ble/nrf52840 --pristine
+$ west flash
 $ cp build/nrf_rid_scanner/zephyr/zephyr.uf2 /media/user/XIAO-BOOT
 ```
 
