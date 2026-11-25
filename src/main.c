@@ -11,13 +11,12 @@
 
 LOG_MODULE_REGISTER(rid_scan, LOG_LEVEL_INF);
 
-#define BLUETOOTH_HEADER_SIZE 4 /* uuid + app code + counter */
-#define BLUETOOTH_MIN_DATA_LEN (RID_MESSAGE_SIZE + BLUETOOTH_HEADER_SIZE)
+#define BLUETOOTH_MIN_DATA_LEN (RID_TRANSPORT_BT_MESSAGE_OFFSET + RID_MESSAGE_SIZE)
 
 static bool filter_rid(struct bt_data *data, void *user_data) {
     const uint8_t **buffer = user_data;
 
-    /* Service data with a 16-bit UUID. */
+    /* Must be service data with a 16-bit UUID. */
     if (data->type != BT_DATA_SVC_DATA16) {
         return true;
     }
@@ -33,34 +32,36 @@ static bool filter_rid(struct bt_data *data, void *user_data) {
     }
 
     /* Check for 0x0D. */
-    if (data->data[RID_TRANSPORT_BT_SERVICE_UUID_SIZE] !=
-        RID_TRANSPORT_BT_APP_CODE) {
+    if (data->data[RID_TRANSPORT_BT_SERVICE_UUID_SIZE] != RID_TRANSPORT_BT_APP_CODE) {
         return true;
     }
 
-    /* If all above is true save Remote ID bytes to buffer. */
-    *buffer = data->data + BLUETOOTH_HEADER_SIZE;
+    /* Point buffer at the service data for later use. */
+    *buffer = data->data;
     return false;
 }
 
 static void
 callback(const bt_addr_le_t *addr, int8_t rssi, uint8_t type, struct net_buf_simple *ad) {
+    uint8_t counter;
     int rc;
     static char json[2048];
     const uint8_t *buffer = NULL;
     const rid_message_t *message;
     struct net_buf_simple_state state;
 
+    /* Save ad state so we can LOG_HEXDUMP_DBG it later. */
     net_buf_simple_save(ad, &state);
     bt_data_parse(ad, filter_rid, &buffer);
     net_buf_simple_restore(ad, &state);
 
-    /* Buffer has data only if we got a Remote ID. */
+    /* Buffer points to data only if we got a Remote ID. */
     if (buffer == NULL) {
         return;
     }
 
-    message = (const rid_message_t *)buffer;
+    message = (const rid_message_t *)(buffer + RID_TRANSPORT_BT_MESSAGE_OFFSET);
+    counter = buffer[RID_TRANSPORT_BT_COUNTER_OFFSET];
 
     LOG_DBG("%s rssi=%d type=%u len=%u", bt_addr_le_str(addr), rssi, type, ad->len);
     LOG_HEXDUMP_DBG(ad->data, ad->len, "ad");
@@ -71,8 +72,11 @@ callback(const bt_addr_le_t *addr, int8_t rssi, uint8_t type, struct net_buf_sim
         return;
     }
 
-    /* Add the mac address to the JSON output and dump. */
-    printf("{\"mac\": \"%s\", %s\n", bt_addr_str(&addr->a), json + 1);
+    /* Add the mac address and counter to the JSON output and dump. */
+    printf(
+        "{\"mac\": \"%s\", \"counter\": %hhu, %s\n", bt_addr_str(&addr->a), counter,
+        json + 1
+    );
 }
 
 int main(void) {
