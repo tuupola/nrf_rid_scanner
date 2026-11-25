@@ -20,3 +20,19 @@ zephyr_library_sources(
     external/librid/src/version.c
     external/librid/src/json.c
 )
+
+set(DRIP_LOCAL_DIR ${CMAKE_CURRENT_SOURCE_DIR}/external/libdrip)
+if(EXISTS ${DRIP_LOCAL_DIR}/CMakeLists.txt)
+    zephyr_include_directories(${DRIP_LOCAL_DIR}/include)
+    zephyr_compile_definitions(RID_HAVE_LIBDRIP)
+    zephyr_library_sources(
+        ${DRIP_LOCAL_DIR}/src/det.c
+        ${DRIP_LOCAL_DIR}/src/error.c
+        ${DRIP_LOCAL_DIR}/src/format.c
+        ${DRIP_LOCAL_DIR}/src/hash.c
+        ${DRIP_LOCAL_DIR}/src/json.c
+        ${DRIP_LOCAL_DIR}/src/link.c
+        ${DRIP_LOCAL_DIR}/src/manifest.c
+        ${DRIP_LOCAL_DIR}/src/wrapper.c
+    )
+endif()

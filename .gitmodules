@@ -1,3 +1,6 @@
 [submodule "external/librid"]
 	path = external/librid
 	url = https://github.com/tuupola/librid.git
+[submodule "external/libdrip"]
+	path = external/libdrip
+	url = https://github.com/tuupola/libdrip.git
