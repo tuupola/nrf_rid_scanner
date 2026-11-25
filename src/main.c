@@ -8,7 +8,7 @@
 #include <rid/transport.h>
 #include <rid/version.h>
 
-LOG_MODULE_REGISTER(rid_scan, LOG_LEVEL_INF);
+LOG_MODULE_REGISTER(nrf_rid_scan, LOG_LEVEL_INF);
 
 #define BT_MIN_DATA_LEN (RID_TRANSPORT_BT_MESSAGE_OFFSET + RID_MESSAGE_SIZE)
 
