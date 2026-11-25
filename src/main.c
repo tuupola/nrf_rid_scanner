@@ -41,21 +41,54 @@ static bool filter_rid(struct bt_data *data, void *user_data) {
     return false;
 }
 
-static void print_csv(const bt_addr_t *addr, int8_t rssi, uint8_t counter, const rid_message_t *message) {
+#if defined(CONFIG_RID_OUTPUT_JSON)
+static int print_json(
+    const bt_addr_t *addr, int8_t rssi, uint8_t counter, const rid_message_t *message
+) {
+    int rc;
+    static char json[2048];
+
+    /* Convert the message to JSON. */
+    rc = rid_message_to_json(message, json, sizeof(json), NULL);
+    if (rc < 0) {
+        LOG_ERR("JSON encode failed: %s", rid_error_to_string(rc));
+        return rc;
+    }
+
+    /* Add mac, counter and rssi to the JSON and print. */
+    printf(
+        "{\"mac\": \"%s\", \"rssi\": %hhd, \"counter\": %hhu, %s\n",
+        bt_addr_str(addr),
+        rssi,
+        counter,
+        json + 1
+    );
+    return 0;
+}
+#endif
+
+#if defined(CONFIG_RID_OUTPUT_CSV)
+static void print_csv(
+    const bt_addr_t *addr, int8_t rssi, uint8_t counter, const rid_message_t *message
+) {
     const uint8_t *bytes = (const uint8_t *)message;
+    size_t size = RID_MESSAGE_SIZE;
+
+    if (rid_message_get_type(message) == RID_MESSAGE_TYPE_MESSAGE_PACK) {
+        size = rid_message_pack_size((const rid_message_pack_t *)message);
+    }
 
     printf("%s,%hhd,%hhu,", bt_addr_str(addr), rssi, counter);
-    for (int i = 0; i < RID_MESSAGE_SIZE; i++) {
+    for (size_t i = 0; i < size; i++) {
         printf("%02X", bytes[i]);
     }
     printf("\n");
 }
+#endif
 
 static void
 callback(const bt_addr_le_t *addr, int8_t rssi, uint8_t type, struct net_buf_simple *ad) {
     uint8_t counter;
-    int rc;
-    static char json[2048];
     const uint8_t *buffer = NULL;
     const rid_message_t *message;
     struct net_buf_simple_state state;
@@ -77,22 +110,12 @@ callback(const bt_addr_le_t *addr, int8_t rssi, uint8_t type, struct net_buf_sim
     LOG_DBG("%s rssi=%d type=%u len=%u", bt_addr_le_str(addr), rssi, type, ad->len);
     LOG_HEXDUMP_DBG(ad->data, ad->len, "ad");
 
-    /* Convert the message to JSON. */
-    rc = rid_message_to_json(message, json, sizeof(json), NULL);
-    if (rc < 0) {
-        LOG_ERR("JSON encode failed: %s", rid_error_to_string(rc));
-        return;
-    }
-
-    /* Add the mac address, rssi and counter to the JSON output and dump. */
-    printf(
-        "{\"mac\": \"%s\", \"rssi\": %hhd, \"counter\": %hhu, %s\n",
-        bt_addr_str(&addr->a),
-        rssi,
-        counter,
-        json + 1
-    );
+#if defined(CONFIG_RID_OUTPUT_JSON)
+    print_json(&addr->a, rssi, counter, message);
+#endif
+#if defined(CONFIG_RID_OUTPUT_CSV)
     print_csv(&addr->a, rssi, counter, message);
+#endif
 }
 
 int main(void) {

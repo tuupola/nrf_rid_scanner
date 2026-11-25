@@ -1,0 +1,11 @@
+mainmenu "nRF Remote ID scanner"
+
+config RID_OUTPUT_JSON
+	bool "Dump Remote ID messages as JSON"
+	default y
+
+config RID_OUTPUT_CSV
+	bool "Dump Remote ID messages as CSV"
+	default n
+
+source "Kconfig.zephyr"
