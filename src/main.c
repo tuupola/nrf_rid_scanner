@@ -41,6 +41,16 @@ static bool filter_rid(struct bt_data *data, void *user_data) {
     return false;
 }
 
+static void print_csv(const bt_addr_t *addr, int8_t rssi, uint8_t counter, const rid_message_t *message) {
+    const uint8_t *bytes = (const uint8_t *)message;
+
+    printf("%s,%hhd,%hhu,", bt_addr_str(addr), rssi, counter);
+    for (int i = 0; i < RID_MESSAGE_SIZE; i++) {
+        printf("%02X", bytes[i]);
+    }
+    printf("\n");
+}
+
 static void
 callback(const bt_addr_le_t *addr, int8_t rssi, uint8_t type, struct net_buf_simple *ad) {
     uint8_t counter;
@@ -82,6 +92,7 @@ callback(const bt_addr_le_t *addr, int8_t rssi, uint8_t type, struct net_buf_sim
         counter,
         json + 1
     );
+    print_csv(&addr->a, rssi, counter, message);
 }
 
 int main(void) {
