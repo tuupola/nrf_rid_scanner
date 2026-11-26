@@ -60,7 +60,7 @@ $ picocom -b 115200 /dev/ttyACM0
 Terminal ready
 *** Booting nRF Connect SDK v3.4.99-0581fccc95ff ***
 *** Using Zephyr OS v4.4.99-474bc1411799 ***
-[00:22:21.156,530] <inf> nrf_rid_scan: librid=0.7.0-dev
+[00:22:21.156,530] <inf> nrf_rid_scan: librid=0.7.0-dev libdrip=0.1.0-dev
 [00:22:21.156,547] <inf> nrf_rid_scan: board=xiao_nrf54lm20a soc=nrf54lm20a
 ...
 {"mac": "EF:2E:A0:2A:4C:4B", "rssi": -41, "counter": 58, "protocol_version":2,"message_type":15,"message_count":6,"messages":[{"protocol_version":2,"message_type":2,"auth_type":5,"page_count":6,"timestamp":0,"length":121,"signature":{"sam_type":3,"vnb":249421758,"vna":249421878,"previous_hash":"5912b49d699b6e5e","current_hash":"87789e08f95f0fa2","link_hash":"aeca7044659c38ca","evidence_count":1,"evidence":["c0e6c4221fd51f41"],"det":"200100380000040593cfd8a8ed5c93c6","signature":"a98cddf39d517fb63ed25390c4ffffed7e74be51bb3332033590eaaf2a25071900ff4b4f2e183248fdae119f8e38307b7e1c53e5eace2438437c72c53982530d"}}]}
@@ -87,7 +87,7 @@ $ picocom -b 115200 /dev/ttyACM0
 Terminal ready
 *** Booting nRF Connect SDK v3.4.99-0581fccc95ff ***
 *** Using Zephyr OS v4.4.99-474bc1411799 ***
-[00:22:21.156,530] <inf> nrf_rid_scan: librid=0.7.0-dev
+[00:22:21.156,530] <inf> nrf_rid_scan: librid=0.7.0-dev libdrip=0.1.0-dev
 [00:22:21.156,547] <inf> nrf_rid_scan: board=xiao_nrf54lm20a soc=nrf54lm20a
 ...
 EF:2E:A0:2A:4C:4B,-52,123,024001200100380000040593CFD8A8ED5C93C6000000000000
