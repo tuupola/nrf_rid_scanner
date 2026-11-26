@@ -33,6 +33,7 @@ if(EXISTS ${DRIP_LOCAL_DIR}/CMakeLists.txt)
         ${DRIP_LOCAL_DIR}/src/json.c
         ${DRIP_LOCAL_DIR}/src/link.c
         ${DRIP_LOCAL_DIR}/src/manifest.c
+        ${DRIP_LOCAL_DIR}/src/version.c
         ${DRIP_LOCAL_DIR}/src/wrapper.c
     )
 endif()

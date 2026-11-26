@@ -4,6 +4,7 @@
 #include <zephyr/net_buf.h>
 #include <zephyr/sys/byteorder.h>
 
+#include <drip/version.h>
 #include <rid/message.h>
 #include <rid/transport.h>
 #include <rid/version.h>
@@ -119,7 +120,7 @@ int main(void) {
     /* Give console some time to catch up. */
     k_msleep(1000);
 
-    LOG_INF("librid %s", rid_version_to_string());
+    LOG_INF("librid=%s libdrip=%s", rid_version_to_string(), drip_version_to_string());
     LOG_INF("board=%s soc=%s", CONFIG_BOARD, CONFIG_SOC);
 
     rc = bt_enable(NULL);
