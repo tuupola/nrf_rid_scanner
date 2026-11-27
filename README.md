@@ -1,8 +1,9 @@
 An [ASTM F3411](https://store.astm.org/f3411-22a.html) and
 [DIN EN 4709-002](https://stan-shop.org/en/catalog/item/74958) Remote
 ID scanner for Nordic Semiconductor development boards. It uses
-[librid](https://github.com/tuupola/librid) for parsing the messages. It
-can dump the results in both JSON and CSV.
+[librid](https://github.com/tuupola/librid) for parsing the messages.
+[Drone Remote ID Protocol (DRIP)](https://datatracker.ietf.org/group/drip/documents/)
+support is provided by [libdrip](https://github.com/tuupola/libdrip).
 
 ## Build
 
@@ -32,15 +33,8 @@ $ nrfutil sdk-manager toolchain launch --ncs-version v3.5.0-preview4 --shell
 (v3.5.0-preview4) host% west flash
 ```
 
-Build and flash with `west`.
-
-```
-$ west flash
-$ cp build/nrf_rid_scanner/zephyr/zephyr.uf2 /media/user/XIAO-BOOT
-```
-
 [XIAO nRF52840](https://www.seeedstudio.com/Seeed-XIAO-BLE-nRF52840-p-5201.html)
-uses UF2 bootloader. Trigger it with double pressing reset. Then build and
+uses UF2 bootloader. Trigger it by double pressing reset. Then build and
 "flash" by copying the firmware to the boot disk.
 
 ```
